@@ -549,6 +549,7 @@
       if (a === 1 || b === 1 || c === 1 || d === 1) {
         // debugger;
         clearInterval(id);
+        console.log(highScore, score);
         let hs = highScore > score ? highScore : score;
         localStorage.setItem("hs", hs);
         document.getElementById(
