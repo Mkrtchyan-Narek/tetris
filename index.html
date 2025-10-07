@@ -226,7 +226,6 @@
     }
     function reset() {
       score = 0;
-      highScore = 0;
       Array.from(document.getElementsByClassName("block")).forEach((el) => {
         if (
           occupied.some((id) => {
@@ -545,17 +544,16 @@
           d = Number(d[1] + d[2]);
           break;
       }
-      console.log(a, b, c, d);
       if (a === 1 || b === 1 || c === 1 || d === 1) {
-        // debugger;
-        clearInterval(id);
-        console.log(highScore, score);
-        let hs = highScore > score ? highScore : score;
-        localStorage.setItem("hs", hs);
-        document.getElementById(
-          "err"
-        ).innerHTML = `Game OVER! Well Played. Your score is ${score}`;
-      }
+  clearInterval(id);
+  let hs = Math.max(highScore, score);
+  localStorage.setItem("hs", hs);
+  document.getElementById("err").innerHTML =
+    `Game OVER! Well Played. Your score is ${score}`;
+  disabled = true;
+  return; // stop recursion
+}
+
       if (a !== 21 && b !== 21 && c !== 21 && d !== 21) {
         a = aL + ++a;
         b = bL + ++b;
@@ -914,6 +912,8 @@
     function start() {
       if (a !== undefined) {
         if (score !== 0) {
+        console.log(highScore, score);
+        
           let hs = highScore > score ? highScore : score;
           localStorage.setItem("hs", hs);
         }
