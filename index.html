@@ -151,7 +151,7 @@
       );
       prefShape = prompt(
         "Just as the color. Enter the shape(S, Z, I, O, T, L, J)"
-      );
+      ).split("");
       fallSpeed = prompt("Enter the speed of falling in ms", 1000);
       createBoard(width, height);
       start();
@@ -184,6 +184,7 @@
       }
       firstBlocks = Array.from(document.getElementsByClassName("first"));
       lastBlocks = Array.from(document.getElementsByClassName("last"));
+      freeLine=[];
       for (let block of lastBlocks) {
         freeLine.push(block.id);
       }
@@ -296,7 +297,7 @@
             block = Number(block[1] + block[2]);
             break;
         }
-        if (block !== 21 && occupied.includes(l + (block + 1)) === false) {
+        if (block !== height+1 && occupied.includes(l + (block + 1)) === false) {
           freeLine.splice(i, 1);
           freeLine.push(l + (block + 1));
           i--;
@@ -319,15 +320,15 @@
         count = 4,
         additional = [],
         removal = [];
-      [aL, bL, cL, dL] = split();
-      if (a !== 21 && b !== 21 && c !== 21 && d !== 21) {
+      [aL, bL, cL, dL] = split_own();
+      if (a !== height+1 && b !== height+1 && c !== height+1 && d !== height+1) {
         a = aL + a;
         b = bL + b;
         c = cL + c;
         d = dL + d;
         increase();
       }
-      [aL, bL, cL, dL] = split();
+      [aL, bL, cL, dL] = split_own();
       for (let i = "a".charCodeAt(); i < y + 97; i++) {
         if (occupied.includes(String.fromCharCode(i) + a) === false) {
           count--;
@@ -554,7 +555,7 @@
   return; // stop recursion
 }
 
-      if (a !== 21 && b !== 21 && c !== 21 && d !== 21) {
+      if (a !== height+1 && b !== height+1 && c !== height+1 && d !== height+1) {
         a = aL + ++a;
         b = bL + ++b;
         c = cL + ++c;
@@ -768,7 +769,7 @@
       return [a, b, c, d];
     }
     function checkCC(fc) {
-      [aL, bL, cL, dL] = split();
+      [aL, bL, cL, dL] = split_own();
       let aLower = aL + (a + 1);
       let aUpper = aL + (a - 1);
       let bLower = bL + (b + 1);
@@ -805,7 +806,7 @@
       alreadyChecked = false;
       isDropped = false;
       canTurn = true;
-      color = getRandomColor();
+      color = getRandomColor();      
       switch (shape) {
         case "I":
           a = "d1";
@@ -903,17 +904,15 @@
           x = "Z";
           break;
       }
-      if (prefShape !== "") {
-        x = prefShape;
+      if (prefShape.length != 0) {
+        x = prefShape[Math.floor(Math.random() * prefShape.length + 1)-1];
       }
       shape = x;
       return x;
     }
     function start() {
       if (a !== undefined) {
-        if (score !== 0) {
-        console.log(highScore, score);
-        
+        if (score !== 0) {        
           let hs = highScore > score ? highScore : score;
           localStorage.setItem("hs", hs);
         }
@@ -1256,7 +1255,7 @@
         clear();
       }, 0);
     }
-    function split() {
+    function split_own() {
       let aL = a.split("").shift();
       switch (a.length) {
         case 2:
@@ -1296,7 +1295,7 @@
       return [aL, bL, cL, dL];
     }
     function checkFl() {
-      [aL, bL, cL, dL] = split();
+      [aL, bL, cL, dL] = split_own();
       a1 = aL + ++a;
       b1 = bL + ++b;
       c1 = cL + ++c;
@@ -1323,7 +1322,7 @@
         return;
       }
       let save = [a, b, c, d];
-      [aL, bL, cL, dL] = split();
+      [aL, bL, cL, dL] = split_own();
       phase++;
       if (phase === 5) {
         phase = 1;
@@ -1606,7 +1605,7 @@
           }
           break;
       }
-      [aL, bL, cL, dL] = split();
+      [aL, bL, cL, dL] = split_own();
       if (
         a === x + 1 ||
         b === x + 1 ||
@@ -1663,9 +1662,7 @@
           setTimeout(() => {
             let prev = [a, b, c, d];
             [a, b, c, d] = right(a, b, c, d);
-            if (prev !== [a, b, c, d]) {
               clear();
-            }
           }, 0);
         }
       },
@@ -1678,9 +1675,7 @@
           setTimeout(() => {
             let prev = [a, b, c, d];
             [a, b, c, d] = left(a, b, c, d);
-            if (prev !== [a, b, c, d]) {
               clear();
-            }
           }, 0);
         }
       },
